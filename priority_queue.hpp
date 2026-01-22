@@ -8,7 +8,7 @@ public:
     const T& top() const {
         return this->front();
     }
-    T top() {
+    T& top() {
         return this->front();
     }
     void push(const T& value) {

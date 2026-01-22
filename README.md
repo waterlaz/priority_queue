@@ -51,7 +51,7 @@ priorityQueue<int> pq(xs);
 The creation time for the new queue is O(n).
 ### Repairing the internal structure of the queue
 If you know what you are doing and mess with the elements directly, a call to `init()` will fix the internal heap:
-```C++    
+```C++
 priorityQueue<int> pq({8, 2, 6, 4, 7, 3});
 for(auto& x:pq){
   if(x%2==0){
@@ -92,10 +92,10 @@ Note that pushing m elements in a queue with n elements takes O(m+n) time. If m 
 ## Performance
 The following tests were made with `GCC 15.2.0` using `g++ -O2` compiler options on a Intel Core Ultra 7 155U CPU
 
-The graph shows time in nanoseconds per one push operation depending on the size of the heap:
+The following graph shows time in nanoseconds per one push operation depending on the size of the heap:
 <img width="1918" height="1137" alt="push" src="https://github.com/user-attachments/assets/4e0d9ff8-e973-49c6-80be-fa284ff03426" />
 
-The graph shows time in nanoseconds per one pop operation depending on the size of the heap:
+The following graph shows time in nanoseconds per one pop operation depending on the size of the heap:
 <img width="1918" height="1137" alt="pop" src="https://github.com/user-attachments/assets/54a07cf7-97b3-480c-989b-d552efe14cfe" />
 
 The quaternary heap (the default) shows best performance.
