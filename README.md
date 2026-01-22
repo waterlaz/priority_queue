@@ -1,6 +1,34 @@
 # priority_queue
 A fast implementation of a priority queue mostly compatible with std
 
+## Usage
+In most aspects the queue is analogous to `std::priority_queue` from standard C++ library.
+```C++
+priorityQueue<int> pq;
+pq.push(5);
+pq.push(3);
+pq.push(8);
+pq.push(1);
+pq.push(7);
+while(!pq.empty()){
+  std::cout<<pq.top()<<" ";
+  pq.pop();
+}
+std::cout<<std::endl;
+```
+Output:
+```
+8 7 5 3 1
+```
+Of course if you want the minimal element to be ontop:
+```C++
+priorityQueue<int, std::greater<int>> pq;
+...
+```
+Output:
+```
+1 3 5 7 8
+```
 ## Key differences
 ### Customizable arity of the queue
 The queue is implemented as a binary heap or a general k-ary heap. This can be configured as a template parameter:
@@ -21,7 +49,7 @@ std::vector<int> xs({8, 2, 6, 4, 7, 3});
 priorityQueue<int> pq(xs);
 ```
 The creation time for the new queue is O(n).
-### Fixing the internal structure of the queue
+### Repairing the internal structure of the queue
 If you know what you are doing and mess with the elements directly, a call to `init()` will fix the internal heap:
 ```C++    
 priorityQueue<int> pq({8, 2, 6, 4, 7, 3});
