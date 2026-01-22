@@ -89,5 +89,16 @@ std::vector<int> xs({5, 1, 11});
 pq.push_range(xs);
 ```
 Note that pushing m elements in a queue with n elements takes O(m+n) time. If m is small consider doing `pq.push(..)` for each element instead.
+## Performance
+The following tests were made with `GCC 15.2.0` using `g++ -O2` compiler options on a Intel Core Ultra 7 155U CPU
+
+The graph shows time in nanoseconds per one push operation depending on the size of the heap:
+<img width="1918" height="1137" alt="push" src="https://github.com/user-attachments/assets/4e0d9ff8-e973-49c6-80be-fa284ff03426" />
+
+The graph shows time in nanoseconds per one pop operation depending on the size of the heap:
+<img width="1918" height="1137" alt="pop" src="https://github.com/user-attachments/assets/54a07cf7-97b3-480c-989b-d552efe14cfe" />
+
+The quaternary heap (the default) shows best performance.
+
 ## Acknowledgements
 Many ideas of this implementation were inspired by a [Malte Skarupke article](https://probablydance.com/2020/08/31/on-modern-hardware-the-min-max-heap-beats-a-binary-heap/)
