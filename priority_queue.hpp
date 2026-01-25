@@ -5,68 +5,74 @@
 #include <vector>
 
 template <typename T, class Compare = std::less<T>, int K = 4>
-class priorityQueue : public std::vector<T> {
+class priorityQueue {
 public:
     const T& top() const {
-        return this->front();
+        return data.front();
     }
     T& top() {
-        return this->front();
+        return data.front();
     }
     void push(const T& value) {
-        this->push_back(value);
-        move_up(this->size() - 1);
+        data.push_back(value);
+        move_up(data.size() - 1);
     }
     void pop() {
-        this->front() = this->back();
-        this->pop_back();
+        data.front() = data.back();
+        data.pop_back();
         move_down(0);
     }
     // Replaces the top element with value:
     void push_pop(const T& value) {
-        this->front() = value;
+        data.front() = value;
         move_down(0);
     }
     template< class... Args >
     void emplace( Args&&... args ) {
-        this->emplace_back(std::forward<Args>(args)...);
-        move_up(this->size() - 1);
+        data.emplace_back(std::forward<Args>(args)...);
+        move_up(data.size() - 1);
     }
     template<typename Container>
     void push_range(const Container& c) {
-        this->insert(this->end(), c.begin(), c.end());
+        data.insert(data.end(), c.begin(), c.end());
         init();
     }
-    priorityQueue() : std::vector<T>() {}
+    size_t size() const {
+        return data.size();
+    }
+    bool empty() const {
+        return data.empty();
+    }
+    priorityQueue() {}
     // construct a heap from given elements in O(n):
-    priorityQueue(std::initializer_list<int> values) : std::vector<T>(values) {
+    priorityQueue(std::initializer_list<int> values) : data(values) {
         init();
     }
     template<typename Container>
-    priorityQueue(const Container& c) : std::vector<T>(c.begin(), c.end()) {
+    priorityQueue(const Container& c) : data(c.begin(), c.end()) {
         init();
     }
     // Turn existing data into a heap
     void init() {
-        for(int i = this->size()/K; i>=0; i--) {
+        for(int i = data.size()/K; i>=0; i--) {
             move_down(i);
         }
     }
 private:
+    std::vector<T> data;
     Compare cmp;
     inline void move_up(size_t i) {
         while(i>0) {
             size_t parent = (i-1)/K;
-            if( !cmp(this->data()[parent], this->data()[i]) ){
+            if( !cmp(data[parent], data[i]) ){
                 break;
             }
-            std::swap(this->data()[i], this->data()[parent]);
+            std::swap(data[i], data[parent]);
             i = parent;
         }
     }
     inline void move_down(size_t i) {
-        size_t n = this->size();
-        auto data = this->data();
+        size_t n = data.size();
         size_t noChildren = (n+K-2)/K;
         size_t limitedChildren = (n-1)/K;
         while(i < noChildren) {
@@ -107,7 +113,6 @@ private:
             case 4:
                 return largest_child<4>(firstChild);
             default:
-                auto data = this->data();
                 size_t a = largest_child<4>(firstChild);
                 size_t b = largest_child(firstChild + 4, n);
                 return cmp(data[a], data[b]) ? b : a;
@@ -115,7 +120,6 @@ private:
     }
     template<int N>
     inline size_t largest_child(size_t firstChild) {
-        auto data = this->data();
         if constexpr (N == 1) {
             return firstChild;
         } else if constexpr (N == 2) {
