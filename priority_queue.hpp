@@ -31,6 +31,7 @@ class priority_queue;
 template <typename T, class Compare, int K>
 class priority_queue<T, Compare, K, true> {
 public:
+    std::vector<priority_queue_node<T>> data;
     const T& top() const {
         return data.front().value;
     }
@@ -123,7 +124,6 @@ public:
         }
     }
 private:
-    std::vector<priority_queue_node<T>> data;
     Compare cmp;
 
     inline void swap_nodes(size_t i, size_t j) {
@@ -206,6 +206,7 @@ private:
 template <typename T, class Compare, int K>
 class priority_queue<T, Compare, K, false> {
 public:
+    std::vector<T> data;
     const T& top() const {
         return data.front();
     }
@@ -261,7 +262,6 @@ public:
         }
     }
 private:
-    std::vector<T> data;
     Compare cmp;
 
     inline void move_up(size_t i) {

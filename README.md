@@ -56,7 +56,7 @@ The creation time for the new queue is **O(n)**.
 If you know what you are doing and mess with the elements directly, a call to `init()` will fix the internal representation of the heap:
 ```C++
 priority_queue<int> pq({8, 2, 6, 4, 7, 3});
-for(auto& x:pq){
+for(auto& x:pq.data){
   if(x%2==0){
     x = 0; // this changes the top element 8 and breaks the heap
   }
