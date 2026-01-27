@@ -98,11 +98,24 @@ Note that pushing m elements in a queue with n elements takes **O(m+n)** time. I
 ### Maintaining access to elements and updating them inside the queue
 It may be desirable to update element priorities within the queue
 (for example in Dijkstra's algorithm).
-This can be done with a special version of the queue:
+This can be done with a special version of the queue (albeit with some overhead):
 ```C++
 priority_queue<int, std::less<int>, 4, true> pq; // the last template parameter enables element handles
 ```
 Which then allows to get handles to elements when pushing them:
+```C++
+auto h = pq.push(5); // h is of type priority_queue_handle*
+```
+With the handle `h` you can update the priority of the element:
+```C++
+pq.update(h, 3); // change the priority of the element with handle h to 3
+```
+Or you can change the element directly and then fix the heap:
+```C++
+pq[h] = 7; // change the priority of the element with handle h to 7
+pq.fix(h); // fix the heap after changing the element directly
+```
+Here is a complete example:
 ```C++
 priority_queue<int, std::less<int>, 4, true> pq({5, 3, 8, 1, 2, 7, 4, 6});
 priority_queue_handle* h = pq.push(11);
