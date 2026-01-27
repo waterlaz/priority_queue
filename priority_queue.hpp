@@ -4,44 +4,44 @@
 
 #include <vector>
 
-struct Handle {
+struct priority_queue_handle {
     size_t index;
 };
 
-template <typename T, bool useHandles>
-class HeapNode;
+template <typename T, bool usepriority_queue_handles>
+class priority_queue_node;
 
 template <typename T>
-class HeapNode<T, false> {
+class priority_queue_node<T, false> {
 public:
     T value;
-    HeapNode& operator=(const T& other) {
+    priority_queue_node& operator=(const T& other) {
         value = other;
         return *this;
     }
-    HeapNode(const T& val) : value(val) {}
-    HeapNode() = default;
+    priority_queue_node(const T& val) : value(val) {}
+    priority_queue_node() = default;
 };
 
 template <typename T>
-class HeapNode<T, true> {
+class priority_queue_node<T, true> {
 public:
     T value;
-    Handle* handle;
-    HeapNode& operator=(const T& other) {
+    priority_queue_handle* handle;
+    priority_queue_node& operator=(const T& other) {
         value = other;
         return *this;
     }
-    HeapNode(const T& val) : value(val) {
-        handle = new Handle();
+    priority_queue_node(const T& val) : value(val) {
+        handle = new priority_queue_handle();
     }
-    HeapNode() {
-        handle = new Handle();
+    priority_queue_node() {
+        handle = new priority_queue_handle();
     }
 };
 
 
-template <typename T, class Compare = std::less<T>, int K = 4, bool useHandles = false>
+template <typename T, class Compare = std::less<T>, int K = 4, bool usepriority_queue_handles = false>
 class priority_queue {
 public:
     const T& top() const {
@@ -50,33 +50,33 @@ public:
     T& top() {
         return data.front().value;
     }
-    T& operator[](Handle* h) {
+    T& operator[](priority_queue_handle* h) {
         return data[h->index].value;
     }
-    Handle* top_handle() {
-        if constexpr (useHandles) {
+    priority_queue_handle* top_handle() {
+        if constexpr (usepriority_queue_handles) {
             return data.front().handle;
         } else {
             return nullptr;
         }
     }
-    template<bool B = useHandles>
-    std::enable_if_t<B, Handle*>
+    template<bool B = usepriority_queue_handles>
+    std::enable_if_t<B, priority_queue_handle*>
     push(const T& value) {
         data.push_back(value);
-        Handle* h = data.back().handle;
+        priority_queue_handle* h = data.back().handle;
         h->index = data.size() - 1;
         move_up(data.size() - 1);
         return h;
     }
-    template<bool B = useHandles>
+    template<bool B = usepriority_queue_handles>
     std::enable_if_t<!B>
     push(const T& value) {
         data.emplace_back(value);
         move_up(data.size() - 1);
     }
     void pop() {
-        if constexpr (useHandles) {
+        if constexpr (usepriority_queue_handles) {
             delete data.front().handle;
         }
         data.front() = data.back();
@@ -84,7 +84,7 @@ public:
         if(data.empty()) {
             return;
         }
-        if constexpr (useHandles) {
+        if constexpr (usepriority_queue_handles) {
             data.front().handle->index = 0;
         }
         move_down(0);
@@ -94,17 +94,17 @@ public:
         data.front() = value;
         move_down(0);
     }
-    template<bool B = useHandles, class... Args >
+    template<bool B = usepriority_queue_handles, class... Args >
     std::enable_if_t<!B>
     emplace( Args&&... args ) {
         data.emplace_back(std::forward<Args>(args)...);
         move_up(data.size() - 1);
     }
-    template<bool B = useHandles, class... Args >
-    std::enable_if_t<B, Handle*>
+    template<bool B = usepriority_queue_handles, class... Args >
+    std::enable_if_t<B, priority_queue_handle*>
     emplace( Args&&... args ) {
         data.emplace_back(std::forward<Args>(args)...);
-        Handle* h = data.back().handle;
+        priority_queue_handle* h = data.back().handle;
         h->index = data.size() - 1;
         move_up(data.size() - 1);
         return h;
@@ -113,7 +113,7 @@ public:
     void push_range(const Container& c) {
         size_t oldSize = data.size();
         data.insert(data.end(), c.begin(), c.end());
-        if constexpr (useHandles) {
+        if constexpr (usepriority_queue_handles) {
             for(size_t i=oldSize; i<data.size(); i++) {
                     data[i].handle->index = i;
                 }
@@ -137,7 +137,7 @@ public:
     }
     // Turn existing data into a heap
     void init() {
-        if constexpr (useHandles) {
+        if constexpr (usepriority_queue_handles) {
             for(size_t i=0; i<data.size(); i++) {
                 data[i].handle->index = i;
             }
@@ -147,12 +147,12 @@ public:
         }
     }
 private:
-    std::vector<HeapNode<T, useHandles>> data;
+    std::vector<priority_queue_node<T, usepriority_queue_handles>> data;
     Compare cmp;
 
     inline void swap_nodes(size_t i, size_t j) {
         std::swap(data[i], data[j]);
-        if constexpr (useHandles) {
+        if constexpr (usepriority_queue_handles) {
             data[i].handle->index = i;
             data[j].handle->index = j;
         }
@@ -170,8 +170,8 @@ private:
     }
     inline void move_down(size_t i) {
         size_t n = data.size();
-        size_t noChildren = (n+K-2)/K;
-        size_t limitedChildren = (n-1)/K;
+        size_t noChildren = (n+K-2)/K; // number of nodes that have at least one child
+        size_t limitedChildren = (n-1)/K; // number of nodes that have all K children
         while(i < noChildren) {
             size_t largest;
             if(i < limitedChildren) [[likely]] {

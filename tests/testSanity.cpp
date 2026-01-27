@@ -80,23 +80,23 @@ int main(){
     q4.push(123456);
     q8.push(123456);
 
-    Handle* h2 = q2_h.push(123456);
-    Handle* h4 = q4_h.push(123456);
-    Handle* h8 = q8_h.push(123456);
+    priority_queue_handle* h2 = q2_h.push(123456);
+    priority_queue_handle* h4 = q4_h.push(123456);
+    priority_queue_handle* h8 = q8_h.push(123456);
     bool popped = false;
 
     while(q.size()>0){
         if(!popped){
             if(q2_h[h2] != 123456){
-                std::cout << "Handle access mismatch for priority_queue with arity 2" << std::endl;
+                std::cout << "priority_queue_handle access mismatch for priority_queue with arity 2" << std::endl;
                 return 1;
             }
             if(q4_h[h4] != 123456){
-                std::cout << "Handle access mismatch for priority_queue with arity 4" << std::endl;
+                std::cout << "priority_queue_handle access mismatch for priority_queue with arity 4" << std::endl;
                 return 1;
             }
             if(q8_h[h8] != 123456){
-                std::cout << "Handle access mismatch for priority_queue with arity 8" << std::endl;
+                std::cout << "priority_queue_handle access mismatch for priority_queue with arity 8" << std::endl;
                 return 1;
             }
             //std::cout<<q2_h[h2]<<" "<<q4_h[h4]<<" "<<q8_h[h8]<<std::endl;
