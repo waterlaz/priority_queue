@@ -1,5 +1,6 @@
 # priority_queue
-A fast implementation of a priority queue mostly compatible with `std::priority_queue`.
+A fast implementation of a priority queue mostly compatible with `std::priority_queue`
+ and with some additional features like updating element priorities inside the queue.
 
 ## Usage
 In most aspects the queue is analogous to `std::priority_queue` from the C++ standard library.
