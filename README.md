@@ -29,6 +29,7 @@ Output:
 ```
 1 3 5 7 8
 ```
+
 ## Key differences
 ### Customizable arity of the queue
 The queue is implemented as a binary heap or a general k-ary heap. This can be configured as a template parameter:
@@ -38,6 +39,7 @@ priority_queue<int, std::less<int>, 4> pq4;
 priority_queue<int, std::less<int>, 8> pq8;
 ```
 The default arity is 4 and the code is mostly optimized to run binary and quaternary heaps.
+
 ### Initialization from an initializater list or a container
 You can pass initial values as an initalization list:
 ```C++
@@ -49,6 +51,7 @@ std::vector<int> xs({8, 2, 6, 4, 7, 3});
 priority_queue<int> pq(xs);
 ```
 The creation time for the new queue is **O(n)**.
+
 ### Repairing the internal structure of the queue
 If you know what you are doing and mess with the elements directly, a call to `init()` will fix the internal representation of the heap:
 ```C++
@@ -68,6 +71,7 @@ Output:
 Wrong top: 0
 Correct top: 7
 ```
+
 ### Replacing the top element faster
 A method `push_pop(<new element>)` is essentially analogous to calling `pop()` and `push(<new element>)` but is significantly faster:
 ```C++
@@ -81,6 +85,7 @@ while(!pq.empty()){
 std::cout<<std::endl;
 ```
 The output is `7 6 5 4 3 2`
+
 ### Pushing multiple elements
 Similar to `priority_queue` from standard C++ library, it is possible to push many elements to the queue:
 ```C++
@@ -89,6 +94,38 @@ std::vector<int> xs({5, 1, 11});
 pq.push_range(xs);
 ```
 Note that pushing m elements in a queue with n elements takes **O(m+n)** time. If m is small consider doing `pq.push(..)` for each element instead.
+
+### Maintaining access to elements and updating them inside the queue
+It may be desirable to update element priorities within the queue
+(for example in Dijkstra's algorithm).
+This can be done with a special version of the queue:
+```C++
+priority_queue<int, std::less<int>, 4, true> pq; // the last template parameter enables element handles
+```
+Which then allows to get handles to elements when pushing them:
+```C++
+priority_queue<int, std::less<int>, 4, true> pq({5, 3, 8, 1, 2, 7, 4, 6});
+priority_queue_handle* h = pq.push(11);
+std::cout<<"top = "<<pq.top()<<"\n";
+// change the priority of element with handle h to 0
+pq.update(h, 0);
+std::cout<<"top = "<<pq.top()<<"\n";
+// change the priority of element with handle h to 5 (manual fix)
+pq[h] = 5;
+pq.fix(h);
+while(!pq.empty()){
+   std::cout<<pq.top()<<" ";
+   pq.pop();
+}
+std::cout<<"\n";
+```
+Output:
+```
+top = 11
+top = 0
+8 7 6 5 5 4 3 2 1
+```
+
 ## Performance
 The following tests were performed using `GCC 15.2.0` compiled with `g++ -O2`, on an Intel Core Ultra 7 155U CPU.
 
